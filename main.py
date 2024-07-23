@@ -62,16 +62,30 @@ def victoria(tablero):
 
             while posicion >= 0 and tablero[i][posicion] == ganador: #Buscar desde donde empieza la línea horizontal
                 posicion -= 1
-            posicion += 1 #Restablecer valor donde empieza el patron
-
-            while cantidad < 3 and tablero[i][posicion] == ganador:
+            posicion += 1
+            while cantidad < 4 and tablero[i][posicion] == ganador:
                 posicion += 1
                 cantidad += 1
             if cantidad == 4:
                 return ganador
-            else:
-                ganador = None
-    return ganador
+    for i in range(len(tablero[0])): #Revisar verticalmente
+        if tablero[2][i] != 0: #Si se ha ganado el tercer elemento de la fila debe estar marcado
+            ganador = tablero[2][i]
+            posicion = 2
+            cantidad = 0
+
+            #Revisar desde donde empieza
+            while posicion < 6 and tablero[posicion][i] == ganador:#Se ejecuta hasta llegar a una posción inexistente o cuando no este el patron
+                posicion += 1
+            posicion-= 1 #Restaurar desde donde se inica
+            print(posicion)
+            while cantidad < 4 and posicion >= 0 and tablero[posicion][i] == ganador: #Contar
+                cantidad+= 1
+                posicion -=1
+            print(cantidad)
+            if cantidad == 4:
+                return ganador
+    return None
 print("Bienvenido, jugemos conecta cuatro")
 system("pause")
 system("cls")
@@ -87,7 +101,7 @@ while continuar:
         case 1:
             print("Jugar con dos personas")
             jugador = 1
-            while not empate(tablero) and victoria(tablero) == None:
+            while victoria(tablero) == None and not empate(tablero):
                 casilla = pedirCasillaAMarcar(tablero)
                 tablero = marcarTablero(tablero, casilla, jugador)
                 mostrarTablero(tablero)
@@ -95,7 +109,7 @@ while continuar:
             if empate(tablero):
                 print("Empate")
             else:
-                print("victoria")
+                print(f"victoria, ganador: {"x" if victoria(tablero) == -1 else "o"}")
 
         case 2:
             print("juego individual")
