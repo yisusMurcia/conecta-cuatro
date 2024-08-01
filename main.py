@@ -117,14 +117,46 @@ def victoria(tablero):
                                 y+= 1
                                 contador+= 1
                             if contador == 4:
-                                return ganador 
-                            print(contador)
+                                return ganador
                         elif coordenadas[0] > 2 and coordenadas[1] < i: #Dirección izquierda-inferior
-                            print("diagonal izquierda-abajo")
+                            while x < 0 and y >= 0 and tablero[y][x] == ganador: #Devolverse hasta donde inicia el patron
+                                y-= 1
+                                x+= 1
+                            x-= 1 #Agregarle uno a las coordenadas para tener la coordenada de inicio
+                            y+= 1
+                            contador = 0
+                            while contador < 4 and tablero[y][x] == ganador:
+                                x-= 1
+                                y+= 1
+                                contador+= 1
+                            if contador == 4:
+                                return ganador
                         elif coordenadas[0] < 2 and coordenadas[1] > i:#Dirección derecha-superior
-                            print("diagonal arriba-derecha")
+                            while x >= 0 and y < 6 and tablero[y][x] == ganador: #Devolverse hasta donde inicia el patron
+                                y+= 1
+                                x-= 1
+                            x+= 1 #Agregarle uno a las coordenadas para tener la coordenada de inicio
+                            y-= 1
+                            contador = 0
+                            while contador < 4 and tablero[y][x] == ganador:
+                                x+= 1
+                                y-= 1
+                                contador+= 1
+                            if contador == 4:
+                                return ganador
                         else: #Diagonla izqueirda-superior
-                            print("diagonal arriba-izqueirda")
+                            while x < 7 and y < 6 and tablero[y][x] == ganador: #Devolverse hasta donde inicia el patron
+                                y+= 1
+                                x+= 1
+                            x-= 1 #Agregarle uno a las coordenadas para tener la coordenada de inicio
+                            y-= 1
+                            contador = 0
+                            while contador < 4 and tablero[y][x] == ganador:
+                                x-= 1
+                                y-= 1
+                                contador+= 1
+                            if contador == 4:
+                                return ganador
 
     return None
 print("Bienvenido, jugemos conecta cuatro")
