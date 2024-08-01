@@ -68,6 +68,7 @@ def victoria(tablero):
                 cantidad += 1
             if cantidad == 4:
                 return ganador
+            
     for i in range(len(tablero[0])): #Revisar verticalmente
         if tablero[2][i] != 0: #Si se ha ganado el tercer elemento de la fila debe estar marcado
             ganador = tablero[2][i]
@@ -78,13 +79,53 @@ def victoria(tablero):
             while posicion < 6 and tablero[posicion][i] == ganador:#Se ejecuta hasta llegar a una posción inexistente o cuando no este el patron
                 posicion += 1
             posicion-= 1 #Restaurar desde donde se inica
-            print(posicion)
-            while cantidad < 4 and posicion >= 0 and tablero[posicion][i] == ganador: #Contar
+            while cantidad < 4 and tablero[posicion][i] == ganador: #Contar
                 cantidad+= 1
                 posicion -=1
-            print(cantidad)
             if cantidad == 4:
                 return ganador
+            
+        #Diagonal
+        posicionesVerticales = [
+            [[5, 3]],
+            [[4, 3], [0, 3]],
+            [[3, 3], [1, 3]],
+            [[3, 2], [3, 4]]
+        ]
+        for i in range(7):#Se analiza la columan con el indice dos, si esta marcada se accede a la otra posción escencial para la victoria diagonal
+            if tablero[2][i] != 0:
+                ganador = tablero[2][i]
+                indice = i
+                if i > 3:
+                    indice = 6 - i
+                #Comprobar las posiciones verticales
+                for coordenadas in posicionesVerticales[indice]:
+                    y = 2
+                    x = i
+                    if tablero[coordenadas[0]][coordenadas[1]] == ganador:
+                        #Revisar la dirección, se determina desde la cordenada en la tercera columna
+
+                        if coordenadas[0] > 2 and coordenadas[1] > i: #Dirección derecha-inferior
+                            while x>= 0 and y >= 0 and tablero[y][x] == ganador: #Devolverse hasta donde inicia el patron
+                                y-= 1
+                                x-= 1
+                            x+= 1 #Agregarle uno a las coordenadas para tener la coordenada de inicio
+                            y+= 1
+                            contador = 0
+                            while contador < 4 and tablero[y][x] == ganador:
+                                x+= 1
+                                y+= 1
+                                contador+= 1
+                            if contador == 4:
+                                return ganador 
+                            print(contador)
+                        elif coordenadas[0] > 2 and coordenadas[1] < i: #Dirección izquierda-inferior
+                            print("diagonal izquierda-abajo")
+                        elif coordenadas[0] < 2 and coordenadas[1] > i:#Dirección derecha-superior
+                            print("diagonal arriba-derecha")
+                        else: #Diagonla izqueirda-superior
+                            print("diagonal arriba-izqueirda")
+
     return None
 print("Bienvenido, jugemos conecta cuatro")
 system("pause")
