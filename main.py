@@ -69,8 +69,8 @@ def victoria(tablero):
             if cantidad == 4:
                 return ganador
             
-    for i in range(len(tablero[0])): #Revisar verticalmente
-        if tablero[2][i] != 0: #Si se ha ganado el tercer elemento de la fila debe estar marcado
+        #Revisar verticalmente, la columna no puede ser 6
+        if i < 6 and tablero[2][i] != 0: #Si se ha ganado el tercer elemento de la fila debe estar marcado
             ganador = tablero[2][i]
             posicion = 2
             cantidad = 0
@@ -125,7 +125,7 @@ def victoria(tablero):
                             x-= 1 #Agregarle uno a las coordenadas para tener la coordenada de inicio
                             y+= 1
                             contador = 0
-                            while contador < 4 and tablero[y][x] == ganador:
+                            while contador < 4 and y < 5 and x <= 0 and tablero[y][x] == ganador:
                                 x-= 1
                                 y+= 1
                                 contador+= 1
@@ -157,8 +157,51 @@ def victoria(tablero):
                                 contador+= 1
                             if contador == 4:
                                 return ganador
-
     return None
+
+def puntuarTablero(tablero, jugador):
+    if victoria(tablero):#Si hay victoria, la puntuación es la más alta
+        return 1000 * jugador
+    
+    puntuacion= 0
+    #Examinar posibles victorias
+    #Horizontal
+    for i in range(6): 
+        contador = 0
+        if tablero[i][3] != -jugador:
+            contador += 1
+
+            #Revisar casillas de la columna
+            posicion = 3
+
+            while posicion <= 0 and tablero[i][posicion] != -jugador:
+                posicion -= 1
+            posicion+= 1 #Restaurar inicio del patrón
+
+            cantidad = 0 #Contar
+            while cantidad < 4 and posicion < 6 and tablero[i][posicion] != -jugador:
+                cantidad += 1
+                posicion += 1
+            puntuacion += cantidad**2 #Se eleva al cuadrado para que a mayor cantidad de espacios ocupados, tenga mayor importancia
+        #Vertical
+        if i < 6 and tablero[2][i] != -jugador:
+            contador +=1
+
+            #Revisar casillas de la fila
+            posicion = 2
+            while posicion < 6 and tablero[posicion][i] != -jugador:
+                posicion += 1
+            posicion -= 1
+
+            cantidad = 0 #contar
+
+            while cantidad < 4 and posicion < 5 and tablero[posicion][i] != -jugador:
+                cantidad += 1
+                posicion += 1
+            
+            puntuacion += cantidad**2 #Se eleva al cuadrado para que a mayor cantidad de espacios ocupados, tenga mayor importancia
+    return puntuacion * contador
+
 print("Bienvenido, jugemos conecta cuatro")
 system("pause")
 system("cls")
@@ -178,6 +221,7 @@ while continuar:
                 casilla = pedirCasillaAMarcar(tablero)
                 tablero = marcarTablero(tablero, casilla, jugador)
                 mostrarTablero(tablero)
+                print(f"La puntuacion para {"o" if jugador == 1 else "x"} es {puntuarTablero(tablero, jugador)}")
                 jugador*=-1
             if empate(tablero):
                 print("Empate")
