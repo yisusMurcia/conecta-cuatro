@@ -200,7 +200,88 @@ def puntuarTablero(tablero, jugador):
                 posicion += 1
             
             puntuacion += cantidad**2 #Se eleva al cuadrado para que a mayor cantidad de espacios ocupados, tenga mayor importancia
-    return puntuacion * contador
+        #Diagonal
+        posicionesVerticales = [
+            [[5, 3]],
+            [[4, 3], [0, 3]],
+            [[3, 3], [1, 3]],
+            [[3, 2], [3, 4]]
+        ]
+        for i in range(7):#Se analiza la columan con el indice dos, si esta marcada se accede a la otra posción escencial para la victoria diagonal
+            if tablero[2][i] != jugador*-1:
+                indice = i
+                if i > 3:
+                    indice = 6 - i
+                #Comprobar las posiciones verticales
+                
+                contador = 0
+                for coordenadas in posicionesVerticales[indice]:
+                    y = 2
+                    x = i
+                    if tablero[coordenadas[0]][coordenadas[1]] != jugador*-1:
+                        #Revisar la dirección, se determina desde la cordenada en la tercera columna
+
+                        if coordenadas[0] > 2 and coordenadas[1] > i: #Dirección derecha-inferior
+                            while x>= 0 and y >= 0 and tablero[y][x] == jugador*-1: #Devolverse hasta donde inicia el patron
+                                y-= 1
+                                x-= 1
+                            x+= 1 #Agregarle uno a las coordenadas para tener la coordenada de inicio
+                            y+= 1
+                            while contador < 4 and tablero[y][x] == jugador*-1:
+                                x+= 1
+                                y+= 1
+                                contador+= 1
+                        elif coordenadas[0] > 2 and coordenadas[1] < i: #Dirección izquierda-inferior
+                            while x < 0 and y >= 0 and tablero[y][x] != jugador*-1: #Devolverse hasta donde inicia el patron
+                                y-= 1
+                                x+= 1
+                            x-= 1 #Agregarle uno a las coordenadas para tener la coordenada de inicio
+                            y+= 1
+                            while contador < 4 and y < 5 and x <= 0 and tablero[y][x] != jugador*-1:
+                                x-= 1
+                                y+= 1
+                                contador+= 1
+                        elif coordenadas[0] < 2 and coordenadas[1] > i:#Dirección derecha-superior
+                            while x >= 0 and y < 6 and tablero[y][x] != jugador*-1: #Devolverse hasta donde inicia el patron
+                                y+= 1
+                                x-= 1
+                            x+= 1 #Agregarle uno a las coordenadas para tener la coordenada de inicio
+                            y-= 1
+                            while contador < 4 and tablero[y][x] != jugador*-1:
+                                x+= 1
+                                y-= 1
+                                contador+= 1
+                        else: #Diagonla izqueirda-superior
+                            while x < 7 and y < 6 and tablero[y][x] != jugador*-1: #Devolverse hasta donde inicia el patron
+                                y+= 1
+                                x+= 1
+                            x-= 1 #Agregarle uno a las coordenadas para tener la coordenada de inicio
+                            y-= 1
+                            while contador < 4 and tablero[y][x] != jugador*-1:
+                                x-= 1
+                                y-= 1
+                                contador+= 1
+                puntuacion += contador**2
+    return puntuacion
+
+def minMax(tableroInicial, jugador, iteracion = 0):
+    tablero = tableroInicial[:]
+    puntuacionYMovimientos = []
+    if iteracion == 3 or victoria(tablero): #Limitar las iteraciones para salir de la función
+        return [puntuarTablero(tablero, jugador)]
+    else:
+        for i in range(7): #Marcar posilbes movimientos
+            tableroAux = tablero[:]
+            tableroAux = marcarTablero(tableroAux, i, jugador) #No se marca si la columan esta llena
+            puntuacion = minMax(tableroAux, jugador*-1, iteracion+ 1)
+            puntuacionYMovimientos.append([puntuacion[0], i])
+    print(puntuacionYMovimientos)
+    puntuacionYMovimientos.sort(key = lambda x: x[0])#Retornar el mejor movimiento
+    if jugador == -1:
+        puntuacionYMovimientos.reverse()
+    return puntuacionYMovimientos[0]
+
+
 
 print("Bienvenido, jugemos conecta cuatro")
 system("pause")
@@ -216,8 +297,10 @@ while continuar:
     match(opcion):
         case 1:
             print("Jugar con dos personas")
-            jugador = 1
+            jugador = -1
             while victoria(tablero) == None and not empate(tablero):
+                tableroDePrueba = tablero[:]
+                #print(minMax(tableroDePrueba, jugador)[1])
                 casilla = pedirCasillaAMarcar(tablero)
                 tablero = marcarTablero(tablero, casilla, jugador)
                 mostrarTablero(tablero)
